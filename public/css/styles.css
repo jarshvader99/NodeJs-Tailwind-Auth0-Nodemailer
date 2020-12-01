@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+.nav-bar {
+    width: 100vw;
+}
+
+.container-mode-toggle {
+    min-height: 100vh;
+    min-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgb(250, 250, 250);
+    transition: background 0.5s ease;
+}
+
+/* p {
+    font-family: sans-serif;
+    font-size: 17px;
+    max-width: 30rem;
+    border: 2px solid rgb(209, 209, 209);
+    border-radius: 60px 0px;
+    padding: 2rem;
+    margin: 1rem;
+    transition: color 0.5s ease, border 0.5s ease;
+} */
+
+.toggle-theme {
+    background: rgba(0, 93, 93, 0.5);
+    height: 3rem;
+    width: 3rem;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.5s ease;
+}
+
+.toggle-theme:hover, .toggle-theme:focus {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.toggle-theme i {
+    font-size: 2rem;
+    position: absolute;
+    transition: transform 0.5s ease, opacity 0.5s ease, color 0.5s ease;
+}
+
+.fa-sun {
+    color: rgb(255, 72, 0);
+    opacity: 0;
+    transform: translateX(50px);
+}
+
+.fa-moon {
+    color: rgb(251, 178, 6);
+    transform: translateX(0px);
+}
+
+.checkbox {
+    display: none;
+}
+
+.checkbox:checked ~ .toggle-theme .fa-sun {
+    opacity: 1;
+    transform: translateX(0px);
+}
+
+.checkbox:checked ~ .toggle-theme .fa-moon {
+    opacity: 1;
+    transform: translateX(-50px);
+}
+
+.container-mode-toggle.dark {
+    background: rgb(0, 17, 29);
+    color: #fafafa;
+}
+
+.container-mode-toggle.dark a{
+    background: rgb(0, 17, 29);
+    color: #fafafa;
+    
+}
+
+.container-mode-toggle.dark p {
+    border: 2px solid rgb(98, 98, 98);
+}
+
+.container-mode-toggle.dark article {
+    border: 2px solid rgb(98, 98, 98);
+}
+
+.dark-shadow {
+    box-shadow: rgb(45, 55, 72) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+}
+
+.profile-img {
+    padding-left: 100px;
+}
+
+.swiper-slide {
+    text-align: center;
+    
+}
+
+.skills {
+    padding: 1.25rem;
+}
+
+@media only screen and (max-width: 600px) {
+    .profile-img {
+      padding-left: 0;
+    }
+  }

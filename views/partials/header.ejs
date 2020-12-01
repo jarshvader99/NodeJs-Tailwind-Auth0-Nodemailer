@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-200">
+<head>
+  <meta charset="UTF-8">
+  <title><%= locals.title || "Express OpenID Connect" %></title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+  <link rel="shortcut icon" href="/images/user-astronaut-solid.svg">
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.css">
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+  <script src="https://kit.fontawesome.com/ee841920d7.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/swiper/swiper-bundle.js"></script>
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script src="/js/main.js" defer></script>
+</head>
+<body>
+    <nav class="flex items-center justify-between flex-wrap bg-indigo-900 p-6 nav-bar">
+
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+            
+            <span class="font-semibold text-xl tracking-tight">
+                JSH <i class="fas fa-user-astronaut"></i> DEV
+            </span>
+        </div>
+
+        <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+            <div class="text-sm lg:flex-grow">
+                <a href="/" class="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">Home</a>
+                <a href="/about" class="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">About</a>
+                <a href="/projects" class="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">Projects</a>
+                <% if (locals.user) { %>
+                    <a  href="/profile" 
+                        class="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">Profile</a>
+                    <a  href="/logout" 
+                        class="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">Logout</a>
+                <% } else { %>
+                    <a  href="/login" 
+                        class="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">Login</a>
+                <% } %>
+            </div>
+
+            <div>
+                <input type="checkbox" id="checkbox" class="checkbox" />
+                <label for="checkbox" class="toggle-theme bg-indigo-900">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </label>
+            </div>
+        </div>
+    </nav>
+    <div class="flex justify-center py-4 container-mode-toggle">
+            <div id="shadow-container" class="w-5/6 lg:w-3/4 p-4 rounded overflow-hidden shadow-lg">
+                
