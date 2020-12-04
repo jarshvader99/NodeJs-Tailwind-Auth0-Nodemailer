@@ -7,29 +7,47 @@ const { db } = require('../models/TodoTask');
 const MongoClient = require('mongodb').MongoClient;
 var mongodb = require('mongodb');
 const url = require('url');
+const { isNullOrUndefined } = require('util');
 
 const GMAIL_USER = process.env.GMAIL_USER
 const GMAIL_PASS = process.env.GMAIL_PASS
 const MY_EMAIL = process.env.MY_EMAIL
 const DB_CONNECT = process.env.DB_CONNECT
 // Index - Home 
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res, next) 
+{
   var url = DB_CONNECT;
-  var userEmail = req.oidc.user.email;
-  MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("jshdevco");
-    dbo.collection("jshdevco").find({authUser: userEmail}, { projection: {_id:1, task:1, createdDate:1, authUser:1}}).toArray(function(err, result) {
+  
+
+  if(req.oidc.isAuthenticated())
+  {
+    var userEmail = req.oidc.user.email;
+    MongoClient.connect(url, function(err, db) 
+    {
       if (err) throw err;
-      res.render("index", 
+      var dbo = db.db("jshdevco");
+  
+      dbo.collection("jshdevco").find({authUser: userEmail}, { projection: {_id:1, task:1, createdDate:1, authUser:1}}).toArray(function(err, result) 
+      {
+        if (err) throw err;
+        res.render("index", 
+        { 
+          title: 'JSH|DEV - Home',
+          isAuthenticated: req.oidc.isAuthenticated(),
+          todoTasks: result 
+        });
+        db.close();
+      });
+    });
+  }
+  else
+  {
+    res.render("index", 
     { 
       title: 'JSH|DEV - Home',
-      isAuthenticated: req.oidc.isAuthenticated(),
-      todoTasks: result 
+      isAuthenticated: req.oidc.isAuthenticated()
     });
-      db.close();
-    });
-  });
+  }
 });
 // About
 router.get('/about', function (req, res, next) {

@@ -112,25 +112,25 @@
     </div>
   </div>
 </div>
-
-<script>
-
-
-</script>
-
+<% if (locals.isAuthenticated) { %>
 <div class="todo-container">
-  <h2>To-Do List</h2>
+  <div class="lg:text-center">
+    <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+      <span class="block text-indigo-600 xl:inline">Todos</span>
+    </h1>
+  </div>
   <div class="todo">
   <form action="/addTodo" method="POST" class="todo-header">
-  <input type="text" name="content">
-  <button type="submit"><span class="fas fa-plus"></span></button>
+  <input type="text" placeholder=" Add a task" name="content">
+  <button type="submit"><span class="fas fa-plus-circle fa-2x"></span></button>
   </form>
   <ul class="todo-list">
     <% if (todoTasks) { %>
       <% todoTasks.forEach(details => { %>
       <li class="todo-list-item">
-      <div class="todo-list-item-name"><%= details.task %></div>
-      <div><%= details.createdDate %></div>
+      <div class="todo-list-item-name w-full"><%= details.task %></div>
+      <div class="todo-list-item-name w-full pt-1 text-xs"><%= details.createdDate %></div>
+      <hr>
       <a href="/edit/<%= details._id %>" class="edit">
       <span class="fas fa-edit"></span>
       </a>
@@ -141,9 +141,9 @@
       <% }) %>
     <% } %>   
   </ul>
-  </div>
-  </div>
-  
+</div>
+  <% } %> 
+</div>
 
 <%- include('partials/footer') -%>
 
