@@ -1,12 +1,33 @@
 var router = require('express').Router();
 const { requiresAuth } = require('express-openid-connect');
 const nodemailer = require('nodemailer');
+const mongoose = require('mongoose');
+const TodoTask = require("../models/TodoTask");
+const { db } = require('../models/TodoTask');
+const MongoClient = require('mongodb').MongoClient;
+var mongodb = require('mongodb');
+const url = require('url');
+
 
 router.get('/', function (req, res, next) {
-  res.render('index', {
-    title: 'JSH|DEV - Home',
-    isAuthenticated: req.oidc.isAuthenticated()
+  var url = "mongodb+srv://admin:JxqaaQFA3LfDuKE7@cluster0.mkzs0.mongodb.net/jshdevco?retryWrites=true&w=majority";
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("jshdevco");
+    dbo.collection("jshdevco").find({}, { projection: {_id:1, task:1, createdDate:1}}).toArray(function(err, result) {
+      if (err) throw err;
+      console.log(result);
+      res.render("index", 
+    { 
+      title: 'JSH|DEV - Home',
+      isAuthenticated: req.oidc.isAuthenticated(),
+      todoTasks: result 
+    });
+      db.close();
+    });
   });
+
+  
 });
 
 router.get('/about', function (req, res, next) {
@@ -74,6 +95,55 @@ router.post('/contact', (req, res) => {
   })
 });
 
+
+
+
+router.post('/addTodo',async (req, res) => 
+{
+
+  
+  const uri = "mongodb+srv://admin:JxqaaQFA3LfDuKE7@cluster0.mkzs0.mongodb.net/jshdevco?retryWrites=true&w=majority";
+  const client = new MongoClient(uri, { useUnifiedTopology: true });
+  client.connect(err => 
+  {
+    const collection = client.db("jshdevco").collection("jshdevco");
+    // perform actions on the collection object
+   
+    console.log(collection);
+    var d = new Date();
+    var myobj = { task: req.body.content, createdDate: d };
+    collection.insertOne(myobj, function(err, res){
+      if(err){
+        throw err;
+      }
+      console.log('added 1');
+      res.redirect('index');
+      db.close();
+    });
+  });
+});
+
+//DELETE
+router.get("/remove/:id", requiresAuth(), function (req, res, next)
+{
+  const uri = "mongodb+srv://admin:JxqaaQFA3LfDuKE7@cluster0.mkzs0.mongodb.net/jshdevco?retryWrites=true&w=majority";
+  var id = req.params.id;
+  MongoClient.connect(uri, function(err, db) 
+  {
+    var dbo = db.db("jshdevco"); 
+    try 
+    {
+      dbo.collection("jshdevco").deleteOne({ "_id" : new mongodb.ObjectId(id)});
+      res.send('POST recieved', 200);
+      db.close();
+    } 
+    catch (e) 
+    {
+      res.send('Error', 500);
+      print(e);
+    }
+  });
+});
 
 
 module.exports = router;

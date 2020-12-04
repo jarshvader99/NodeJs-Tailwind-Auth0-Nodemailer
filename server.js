@@ -6,6 +6,7 @@ const path = require('path');
 const router = require('./routes/index');
 const { auth } = require('express-openid-connect');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const app = express();
 
@@ -16,6 +17,19 @@ app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}))
+
+const todoTaskSchema = new mongoose.Schema({
+content: {
+type: String,
+required: true
+},
+date: {
+type: Date,
+default: Date.now
+}
+})
+module.exports = mongoose.model('todo',todoTaskSchema);
+
 
 const config = {
   authRequired: false,
