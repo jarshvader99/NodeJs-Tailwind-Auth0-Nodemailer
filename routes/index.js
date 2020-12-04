@@ -97,11 +97,8 @@ router.post('/contact', (req, res) => {
 
 const DB_CONNECT = process.env.DB_CONNECT
 
-
 router.post('/addTodo',async (req, res) => 
-{
-
-  
+{ 
   const uri = DB_CONNECT;
   const client = new MongoClient(uri, { useUnifiedTopology: true });
   client.connect(err => 
@@ -112,14 +109,15 @@ router.post('/addTodo',async (req, res) =>
     console.log(collection);
     var d = new Date();
     var myobj = { task: req.body.content, createdDate: d };
-    collection.insertOne(myobj, function(err, res){
-      if(err){
+    collection.insertOne(myobj, function(err, res)
+    {
+      if(err)
+      {
         throw err;
       }
-      console.log('added 1');
-      res.redirect('index');
       db.close();
     });
+    res.redirect('/');
   });
 });
 
@@ -134,16 +132,14 @@ router.get("/remove/:id", requiresAuth(), function (req, res, next)
     try 
     {
       dbo.collection("jshdevco").deleteOne({ "_id" : new mongodb.ObjectId(id)});
-      res.send('POST recieved', 200);
+      res.redirect('/');
       db.close();
     } 
     catch (e) 
     {
-      res.send('Error', 500);
-      print(e);
+      res.status(500).send('Error: ' + e);
     }
   });
 });
-
 
 module.exports = router;
