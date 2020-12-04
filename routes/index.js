@@ -8,15 +8,19 @@ const MongoClient = require('mongodb').MongoClient;
 var mongodb = require('mongodb');
 const url = require('url');
 
-
+const GMAIL_USER = process.env.GMAIL_USER
+const GMAIL_PASS = process.env.GMAIL_PASS
+const MY_EMAIL = process.env.MY_EMAIL
+const DB_CONNECT = process.env.DB_CONNECT
+// Index - Home 
 router.get('/', function (req, res, next) {
-  var url = "mongodb+srv://admin:JxqaaQFA3LfDuKE7@cluster0.mkzs0.mongodb.net/jshdevco?retryWrites=true&w=majority";
+  var url = DB_CONNECT;
+  var userEmail = req.oidc.user.email;
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     var dbo = db.db("jshdevco");
-    dbo.collection("jshdevco").find({}, { projection: {_id:1, task:1, createdDate:1}}).toArray(function(err, result) {
+    dbo.collection("jshdevco").find({authUser: userEmail}, { projection: {_id:1, task:1, createdDate:1, authUser:1}}).toArray(function(err, result) {
       if (err) throw err;
-      console.log(result);
       res.render("index", 
     { 
       title: 'JSH|DEV - Home',
@@ -26,43 +30,29 @@ router.get('/', function (req, res, next) {
       db.close();
     });
   });
-
-  
 });
-
+// About
 router.get('/about', function (req, res, next) {
   res.render('about', {
     title: 'JSH|DEV - About',
     isAuthenticated: req.oidc.isAuthenticated()
   });
 });
-
+// Projects
 router.get('/projects', function (req, res, next) {
   res.render('projects', {
     title: 'JSH|DEV - Projects',
     isAuthenticated: req.oidc.isAuthenticated()
   });
 });
-
+// Profile
 router.get('/profile', requiresAuth(), function (req, res, next) {
   res.render('profile', {
     userProfile: JSON.stringify(req.oidc.user, null, 2),
     title: 'JSH|DEV - Profile'
   });
 });
-
-router.get('/contact-success', requiresAuth(), function (req, res, next) {
-  res.render('contact-success', {
-    userProfile: JSON.stringify(req.oidc.user, null, 2),
-    title: 'JSH|DEV - Email Sent'
-  });
-});
-
-const GMAIL_USER = process.env.GMAIL_USER
-const GMAIL_PASS = process.env.GMAIL_PASS
-const MY_EMAIL = process.env.MY_EMAIL
-
-// POST route from contact form
+// POST contact form
 router.post('/contact', (req, res) => {
 
   // Instantiate the SMTP server
@@ -94,21 +84,24 @@ router.post('/contact', (req, res) => {
     }
   })
 });
-
-const DB_CONNECT = process.env.DB_CONNECT
-
-router.post('/addTodo',async (req, res) => 
+// Contact Success
+router.get('/contact-success', requiresAuth(), function (req, res, next) {
+  res.render('contact-success', {
+    userProfile: JSON.stringify(req.oidc.user, null, 2),
+    title: 'JSH|DEV - Email Sent'
+  });
+});
+//Add Todo
+router.post('/addTodo', requiresAuth(), async (req, res) => 
 { 
   const uri = DB_CONNECT;
+  var userEmail = req.oidc.user.email;
   const client = new MongoClient(uri, { useUnifiedTopology: true });
   client.connect(err => 
   {
     const collection = client.db("jshdevco").collection("jshdevco");
-    // perform actions on the collection object
-   
-    console.log(collection);
     var d = new Date();
-    var myobj = { task: req.body.content, createdDate: d };
+    var myobj = { task: req.body.content, createdDate: d, authUser: userEmail };
     collection.insertOne(myobj, function(err, res)
     {
       if(err)
@@ -120,8 +113,7 @@ router.post('/addTodo',async (req, res) =>
     res.redirect('/');
   });
 });
-
-//DELETE
+//Delete Todo
 router.get("/remove/:id", requiresAuth(), function (req, res, next)
 {
   const uri = DB_CONNECT;
