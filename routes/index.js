@@ -95,14 +95,14 @@ router.post('/contact', (req, res) => {
   })
 });
 
-
+const DB_CONNECT = process.env.DB_CONNECT
 
 
 router.post('/addTodo',async (req, res) => 
 {
 
   
-  const uri = "mongodb+srv://admin:JxqaaQFA3LfDuKE7@cluster0.mkzs0.mongodb.net/jshdevco?retryWrites=true&w=majority";
+  const uri = DB_CONNECT;
   const client = new MongoClient(uri, { useUnifiedTopology: true });
   client.connect(err => 
   {
@@ -126,7 +126,7 @@ router.post('/addTodo',async (req, res) =>
 //DELETE
 router.get("/remove/:id", requiresAuth(), function (req, res, next)
 {
-  const uri = "mongodb+srv://admin:JxqaaQFA3LfDuKE7@cluster0.mkzs0.mongodb.net/jshdevco?retryWrites=true&w=majority";
+  const uri = DB_CONNECT;
   var id = req.params.id;
   MongoClient.connect(uri, function(err, db) 
   {
