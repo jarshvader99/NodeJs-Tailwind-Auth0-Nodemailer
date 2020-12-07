@@ -21,6 +21,13 @@ if(toolsLabel != null)
   }, false);
 }
 
+document.getElementById('edit-task').onclick = function changeContent() {
+  console.log('clicked');
+  document.getElementById('hidden-input').style = "display:unset;";
+  
+
+}
+
 var mySwiper = new Swiper('.swiper-container', {
     // Optional parameters
     direction: 'horizontal',

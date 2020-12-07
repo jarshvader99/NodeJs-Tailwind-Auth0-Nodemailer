@@ -209,7 +209,10 @@
     cursor:pointer;
     text-decoration: none;
     }
-
+    
+#hidden-input {
+    display: none;
+}
 
 
 
