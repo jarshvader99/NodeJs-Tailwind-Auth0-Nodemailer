@@ -26,7 +26,6 @@ function edit(id) {
 }
 
 function cancelEdit(id) {
-
   document.getElementById('hidden-input-' + id).style = "display:none";
   document.getElementById('task-item-' + id).style = '';
 }
