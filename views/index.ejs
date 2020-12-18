@@ -144,21 +144,23 @@
       <% todoTasks.forEach(details => { %>
       <li class="todo-list-item">
         <div class="todo-list-item-name w-full">
-          <span id="hidden-input">
+          <span id="hidden-input-<%= details._id %>" class="editTask">
             <form action="/edit" method="POST" class="todo-header">
+              <span id="<%= details._id %>" class="cancelEdit far fa-times-circle" onClick="cancelEdit(this.id)"></span>
               <input id="editInput-<%= details._id %>" type="text" value="<%= details.task %>" name="newContent">
               <input id="taskIdInput-<%= details._id %>" style="display:none;" type="text" value="<%= details._id %>"
                 name="taskId">
+
               <button type="submit"><span class="fas fa-plus-circle"></span></button>
             </form>
           </span>
-          <span id="task-item">
+          <span id="task-item-<%= details._id %>">
             <%= details.task %>
           </span>
         </div>
         <div class="todo-list-item-name w-full pt-1 text-xs"><%= details.createdDate %></div>
         <hr>
-        <a id="edit-task" class="edit">
+        <a id="edit-task-<%= details._id %>" onClick="edit(this.id)" class="edit">
           <span class="fas fa-edit"></span>
         </a>
         <a href="/remove/<%= details._id %>" class="remove">

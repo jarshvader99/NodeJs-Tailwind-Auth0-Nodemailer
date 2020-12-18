@@ -19,13 +19,16 @@ if (toolsLabel != null) {
   }, false);
 }
 
-document.getElementById('edit-task').onclick = function changeContent() {
-  console.log('clicked');
-  document.getElementById('hidden-input').style = "display:unset;";
-  document.getElementById('task-item').style = 'display:none';
-  document.getElementById('task-item').style = 'display:none';
+function edit(id) {
+  var newId = id.substring(10);
+  document.getElementById('hidden-input-' + newId).style = "display:unset;";
+  document.getElementById('task-item-' + newId).style = 'display:none';
+}
 
+function cancelEdit(id) {
 
+  document.getElementById('hidden-input-' + id).style = "display:none";
+  document.getElementById('task-item-' + id).style = '';
 }
 
 var mySwiper = new Swiper('.swiper-container', {

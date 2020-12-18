@@ -129,17 +129,6 @@ router.post('/edit', requiresAuth(), async (req, res, next) => {
   var d = new Date();
   console.log(id);
   console.log(req.body.newContent);
-  // Find the document that describes "lego"
-  const query = { "_id": id };
-  // Set some fields in that document
-  const update = {
-    "$set": {
-      "task": req.body.newContent,
-      "createdDate": d
-    }
-  };
-  // Return the updated document instead of the original document
-  const options = { new: true };
 
   MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, db) {
     var dbo = db.db("jshdevco");

@@ -214,8 +214,18 @@
     }
 
     
-#hidden-input {
+.editTask {
     display: none;
+}
+
+.cancelEdit {
+    margin-top: 9px;
+    margin-right: 5px;
+    color: #ff0000;
+}
+
+.cancelEdit:hover {
+    cursor: pointer;
 }
 
 
