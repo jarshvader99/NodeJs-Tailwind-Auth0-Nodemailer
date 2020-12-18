@@ -117,7 +117,7 @@
 }
 
 .todo-container {
-    color: white;
+    color: rgb(255, 255, 255);
     position: relative;
     padding: 20px;
     background: rgba(255, 255, 255, 0.1);
@@ -209,6 +209,10 @@
     cursor:pointer;
     text-decoration: none;
     }
+    .todo-container input {
+        color: #000;
+    }
+
     
 #hidden-input {
     display: none;

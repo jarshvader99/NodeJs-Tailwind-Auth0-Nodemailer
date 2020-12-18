@@ -14,39 +14,34 @@ const GMAIL_PASS = process.env.GMAIL_PASS
 const MY_EMAIL = process.env.MY_EMAIL
 const DB_CONNECT = process.env.DB_CONNECT
 // Index - Home 
-router.get('/', function (req, res, next) 
-{
+router.get('/', function (req, res, next) {
   var url = DB_CONNECT;
-  
 
-  if(req.oidc.isAuthenticated())
-  {
+
+  if (req.oidc.isAuthenticated()) {
     var userEmail = req.oidc.user.email;
-    MongoClient.connect(url, function(err, db) 
-    {
+    MongoClient.connect(url, function (err, db) {
       if (err) throw err;
       var dbo = db.db("jshdevco");
-  
-      dbo.collection("jshdevco").find({authUser: userEmail}, { projection: {_id:1, task:1, createdDate:1, authUser:1}}).toArray(function(err, result) 
-      {
+
+      dbo.collection("jshdevco").find({ authUser: userEmail }, { projection: { _id: 1, task: 1, createdDate: 1, authUser: 1 } }).toArray(function (err, result) {
         if (err) throw err;
-        res.render("index", 
-        { 
-          title: 'JSH|DEV - Home',
-          isAuthenticated: req.oidc.isAuthenticated(),
-          todoTasks: result 
-        });
+        res.render("index",
+          {
+            title: 'JSH|DEV - Home',
+            isAuthenticated: req.oidc.isAuthenticated(),
+            todoTasks: result
+          });
         db.close();
       });
     });
   }
-  else
-  {
-    res.render("index", 
-    { 
-      title: 'JSH|DEV - Home',
-      isAuthenticated: req.oidc.isAuthenticated()
-    });
+  else {
+    res.render("index",
+      {
+        title: 'JSH|DEV - Home',
+        isAuthenticated: req.oidc.isAuthenticated()
+      });
   }
 });
 // About
@@ -110,20 +105,16 @@ router.get('/contact-success', requiresAuth(), function (req, res, next) {
   });
 });
 //Add Todo
-router.post('/addTodo', requiresAuth(), async (req, res) => 
-{ 
+router.post('/addTodo', requiresAuth(), async (req, res) => {
   const uri = DB_CONNECT;
   var userEmail = req.oidc.user.email;
   const client = new MongoClient(uri, { useUnifiedTopology: true });
-  client.connect(err => 
-  {
+  client.connect(err => {
     const collection = client.db("jshdevco").collection("jshdevco");
     var d = new Date();
     var myobj = { task: req.body.content, createdDate: d, authUser: userEmail };
-    collection.insertOne(myobj, function(err, res)
-    {
-      if(err)
-      {
+    collection.insertOne(myobj, function (err, res) {
+      if (err) {
         throw err;
       }
       db.close();
@@ -131,22 +122,54 @@ router.post('/addTodo', requiresAuth(), async (req, res) =>
     res.redirect('/');
   });
 });
+//UPDATE
+router.post('/edit', requiresAuth(), async (req, res, next) => {
+  const uri = DB_CONNECT;
+  const id = new mongodb.ObjectID(req.body.taskId);
+  var d = new Date();
+  console.log(id);
+  console.log(req.body.newContent);
+  // Find the document that describes "lego"
+  const query = { "_id": id };
+  // Set some fields in that document
+  const update = {
+    "$set": {
+      "task": req.body.newContent,
+      "createdDate": d
+    }
+  };
+  // Return the updated document instead of the original document
+  const options = { new: true };
+
+  MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, db) {
+    var dbo = db.db("jshdevco");
+    if (err) { throw err; }
+    else {
+      var collection = dbo.collection("jshdevco");
+      collection.findOneAndUpdate({ "_id": id }, { $set: { "task": req.body.newContent, "createdDate": d } }, { returnNewDocument: true }, function (err, doc) {
+        if (err) { throw err; }
+        else {
+          console.log("Updated");
+          res.redirect('/');
+          db.close();
+        }
+      });
+    }
+  });
+
+});
 //Delete Todo
-router.get("/remove/:id", requiresAuth(), function (req, res, next)
-{
+router.get("/remove/:id", requiresAuth(), function (req, res, next) {
   const uri = DB_CONNECT;
   var id = req.params.id;
-  MongoClient.connect(uri, function(err, db) 
-  {
-    var dbo = db.db("jshdevco"); 
-    try 
-    {
-      dbo.collection("jshdevco").deleteOne({ "_id" : new mongodb.ObjectId(id)});
+  MongoClient.connect(uri, function (err, db) {
+    var dbo = db.db("jshdevco");
+    try {
+      dbo.collection("jshdevco").deleteOne({ "_id": new mongodb.ObjectId(id) });
       res.redirect('/');
       db.close();
-    } 
-    catch (e) 
-    {
+    }
+    catch (e) {
       res.status(500).send('Error: ' + e);
     }
   });
